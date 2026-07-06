@@ -9,10 +9,36 @@
 //9. 유저가 이미 입력한 숫자를 또 입력하면, 알려준다. 기회를 깎지 않는다.
 
 let computerNum = 0;
+let playButton = document.getElementById("play-button");
+let userInput = document.getElementById("user-input");
+let resultArea = document.getElementById("result-area");
+let resetButton = document.getElementById("reset-button");
+
+playbutton.addEventListener("click", play);
+resetButton.addEventListener("click", reset);
 
 function pickRandomNum() {
     computerNum = Math.floor(Math.random() * 100) + 1;
     console.log("정답", computerNum);
 }
 
+function play() {
+    let userValue = userInput.value;
+    if (userValue < computerNum) {
+        resultArea.textContent = "up!!!";
+    } else if (userValue > computerNum) {
+        resultArea.textContent = "down!!!";
+    } else {
+        resultArea.textContent = "맞췄습니다!";
+    }
+}
+function reset(){
+    // user input 창이 깨끗하게 정리되고
+    userInput.value = "";
+    // 새로운 번호가 생성되고
     pickRandomNum();
+}
+    pickRandomNum();
+
+// pickRandomNum() 함수가 호출되는 위치를 확인하고, 중괄호가 올바르게 닫혔는지 확인을 못하여 답(console.log 값) 안나옴.
+// 추가해서 넣을예정
