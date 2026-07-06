@@ -14,7 +14,7 @@ let userInput = document.getElementById("user-input");
 let resultArea = document.getElementById("result-area");
 let resetButton = document.getElementById("reset-button");
 
-playbutton.addEventListener("click", play);
+playButton.addEventListener("click", play);
 resetButton.addEventListener("click", reset);
 
 function pickRandomNum() {
