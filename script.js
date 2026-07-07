@@ -1,95 +1,77 @@
-// 제작시 생각해야할 것들
-//1. 랜덤번호 지정
-//2. 유저가 번호를 입력한다 그리고 go 라는 버튼을 누름
-//3. 만약에 유저가 랜덤번호를 맞추면, 맞췄습니다!
-//4. 랜덤번호가 < 유저번호 Down!!!
-//5. 랜덤번호가 > 유저번호 Up!!
-//6. Reset 버튼을 누르면 게임이 리셋된다.
-//7. 5번의 기회를 다쓰면 게임이 끝난다. (더이상 추측불가, 버튼이 disable)
-//8. 유저가 1~100 범위 밖에 숫자를 입력하며 알려준다. 기회를 깎지 않는다.
-//9. 유저가 이미 입력한 숫자를 또 입력하면, 알려준다. 기회를 깎지 않는다.
-
+// ---------- 요소 가져오기 ----------
 let computerNum = 0;
 let playButton = document.getElementById("play-button");
 let userInput = document.getElementById("user-input");
 let resultArea = document.getElementById("result-area");
 let resetButton = document.getElementById("reset-button");
-let chances = 3;
-// 기회는 3번으로 제한 (요청사항: 과제 제출시)
-let gameOver = false;
 let chanceArea = document.getElementById("chance-area");
+let answerArea = document.getElementById("answer-area");   // ★ 추가 1: 정답 자리 붙잡기
+let chances = 3;
+let gameOver = false;
 let history = [];
 
+// ---------- 이벤트 연결 ----------
 playButton.addEventListener("click", play);
 resetButton.addEventListener("click", reset);
-userInput.addEventListener("focus", function() {userInput.value = "";});
-// focus 이벤트는 input 창에 커서가 깜빡일 때 발생하는 이벤트, 그리고 "" 넣은것은 앞써 쳤던 값이 없어진다.
+userInput.addEventListener("focus", function () { userInput.value = ""; });
 
-
+// ---------- 랜덤 번호 뽑기 ----------
 function pickRandomNum() {
-    computerNum = Math.floor(Math.random() * 100) + 1;
-    console.log("정답", computerNum);
+  computerNum = Math.floor(Math.random() * 100) + 1;
+  console.log("정답", computerNum);
+  answerArea.textContent = `정답은 ${computerNum} 입니다`;   // ★ 추가 2: 화면에 정답 표시 (백틱 주의!)
 }
 
+// ---------- GO 버튼 ----------
 function play() {
-    let userValue = userInput.value;
+  let userValue = Number(userInput.value);
 
-if(userValue < 1 || userValue > 100) {
-resultArea.textContent = "1과 100사이 숫자를 입력해주세요";
-return; // 함수 실행을 종료
-}
+  if (userValue < 1 || userValue > 100) {
+    resultArea.textContent = "1과 100사이 숫자를 입력해주세요";
+    return;
+  }
 
-if(history.includes(userValue)) {
+  if (history.includes(userValue)) {
     resultArea.textContent = "이미 입력한 숫자입니다. 다른 숫자를 입력해주세요.";
     return;
-}
-// 위에는 유저를 배려하는 조치
+  }
 
-    chances--;
-    chanceArea.textContent = `남은기회:${chances}번`;
-    console.log("chances", chances);
-    // 숫자 변수값만 넣고 싶을 때, '남은 찬스: chances 만 넣으면 안된다.
-    // 정적인 값과 동적인 값을 같이 넣어주고 싶다면 중요! 약간 다른 문법을 사용해야해야한다.
-    //  "" 의 값은 정적인 값에 ''(백틱) 의 값은 동적인 값에 사용한다.    
-    // chances = chances - 1; // chances -= 1; // chances--; 동일한 의미
-    // console.log는 하고 싶은 로직에 바로 뒤에 붙여줘야한다. // 쓴다고 띄어쓰면 결과값과 오류가 계속생긴다.
+  chances--;
+  chanceArea.textContent = `남은 찬스:${chances}번`;
 
-    if (userValue < computerNum) {
-        resultArea.textContent = "up!!!";
-    } else if (userValue > computerNum) {
-        resultArea.textContent = "down!!!";
-    } else {
-        resultArea.textContent = "맞췄습니다!";
+  if (userValue < computerNum) {
+    resultArea.textContent = "up!!!";
+  } else if (userValue > computerNum) {
+    resultArea.textContent = "down!!!";
+  } else {
+    resultArea.textContent = "맞췄습니다!";
     gameOver = true;
-    }
+  }
 
-history.push(userValue);
-console.log(history);
-// 앞에서 유효성 검사를 하고 (return; // 함수 실행을 종료) history.push(userValue); 를 넣어야 한다. 그래야 1~100 사이의 값만 history 배열에 들어간다.
+  history.push(userValue);
 
-    if (chances < 1){
-        gameOver = true;
-    resultArea.textContent = `정답은 ${computerNum}입니다!`;
-    }
-    // 긁적긁적 빛나 강사님도 실수한 부분! 왜 실수 했을까? 
-    // let 변수를 선언하고 chances 라는 고유 ID 값에 = 3 3번 기회로 설정하였고,
-    // 3번 설정 값에 1 밑으로 떨어지면( < 1) 버튼이 정지되어야 하는데 < 3 이라고 하면 3 이하부터는 작동하지 않는 문제가 발생함
+  if (chances < 1 && gameOver === false) {
+    gameOver = true;
+    resultArea.textContent = `게임 오버! 정답은 ${computerNum} 이었습니다`;
+  }
 
-if (gameOver == true) {
+  if (gameOver === true) {
     playButton.disabled = true;
-}
+  }
 }
 
-function reset(){
-    // user input 창이 깨끗하게 정리되고
-    userInput.value = "";
-    // 새로운 번호가 생성되고
-    pickRandomNum();
-
-    resultArea.textContent = "결과값이 나옵니다";
+// ---------- Reset 버튼 ----------
+function reset() {
+  userInput.value = "";
+  resultArea.textContent = "결과가 나온다";
+  chances = 3;
+  history = [];
+  gameOver = false;
+  playButton.disabled = false;
+  chanceArea.textContent = `남은 찬스:${chances}번`;
+  pickRandomNum();   // 새 정답을 뽑으면 ★추가2 덕분에 화면 표시도 자동 갱신
 }
-    pickRandomNum();
 
-// pickRandomNum() 함수가 호출되는 위치를 확인하고, 중괄호가 올바르게 닫혔는지 확인을 못하여 답(console.log 값) 안나옴.
-// 추가해서 넣을예정 (7.7 새벽 1:30)
-// 철자 대소문자도 철저히 확인하기 '//'요거 의미 찾기 (숨기게 하는 기능 인 것 같음)
+// ---------- 게임 시작 (파일 맨 아래) ----------
+pickRandomNum();   // ★ 추가 3: 페이지 열리자마자 실행 → '처음부터' 정답이 보임
+chanceArea.textContent = `남은 찬스:${chances}번`;

@@ -1,21 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>숫자 맞추기 게임</title>
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
-  <body>
-    <div class="background">
+  <body class="background">
+
       <h1>숫자 맞추기 게임</h1>
-      <div id=""result-area">결과과 나온다</div>
+
+      <div id="result-area">결과가 나온다</div>
       <div id="chance-area">남은 찬스:</div>
+
       <input type="number" id="user-input" min="1" max="100" />
       <button id="play-button">Go!</button>
       <button id="reset-button">Reset</button>
-      <p id="result-area"></p>
-    </div>
+
+      <p id="answer-area"></p>   <!-- ★ 추가: 정답 전용 자리 -->
+
     <script src="script.js"></script>
   </body>
 </html>
