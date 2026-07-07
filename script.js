@@ -1,3 +1,4 @@
+// 제작시 생각해야할 것들
 //1. 랜덤번호 지정
 //2. 유저가 번호를 입력한다 그리고 go 라는 버튼을 누름
 //3. 만약에 유저가 랜덤번호를 맞추면, 맞췄습니다!
@@ -14,12 +15,16 @@ let userInput = document.getElementById("user-input");
 let resultArea = document.getElementById("result-area");
 let resetButton = document.getElementById("reset-button");
 let chances = 3;
-// 기회는 3번으로 제한 (과제제출시)
+// 기회는 3번으로 제한 (요청사항: 과제 제출시)
 let gameOver = false;
 let chanceArea = document.getElementById("chance-area");
+let history = [];
 
 playButton.addEventListener("click", play);
 resetButton.addEventListener("click", reset);
+userInput.addEventListener("focus", function() {userInput.value = "";});
+// focus 이벤트는 input 창에 커서가 깜빡일 때 발생하는 이벤트, 그리고 "" 넣은것은 앞써 쳤던 값이 없어진다.
+
 
 function pickRandomNum() {
     computerNum = Math.floor(Math.random() * 100) + 1;
@@ -29,14 +34,25 @@ function pickRandomNum() {
 function play() {
     let userValue = userInput.value;
 
-    chances -- ;
-    chanceArea.textContent = `남은 찬스: ${chances}번`;
+if(userValue < 1 || userValue > 100) {
+resultArea.textContent = "1과 100사이 숫자를 입력해주세요";
+return; // 함수 실행을 종료
+}
+
+if(history.includes(userValue)) {
+    resultArea.textContent = "이미 입력한 숫자입니다. 다른 숫자를 입력해주세요.";
+    return;
+}
+// 위에는 유저를 배려하는 조치
+
+    chances--;
+    chanceArea.textContent = `남은기회:${chances}번`;
+    console.log("chances", chances);
     // 숫자 변수값만 넣고 싶을 때, '남은 찬스: chances 만 넣으면 안된다.
     // 정적인 값과 동적인 값을 같이 넣어주고 싶다면 중요! 약간 다른 문법을 사용해야해야한다.
-    //  "" 의 값은 정적인 값에 ''(백틱) 의 값은 동적인 값에 사용한다.
-    // 
-    console.log("chances", chances);
+    //  "" 의 값은 정적인 값에 ''(백틱) 의 값은 동적인 값에 사용한다.    
     // chances = chances - 1; // chances -= 1; // chances--; 동일한 의미
+    // console.log는 하고 싶은 로직에 바로 뒤에 붙여줘야한다. // 쓴다고 띄어쓰면 결과값과 오류가 계속생긴다.
 
     if (userValue < computerNum) {
         resultArea.textContent = "up!!!";
@@ -44,10 +60,16 @@ function play() {
         resultArea.textContent = "down!!!";
     } else {
         resultArea.textContent = "맞췄습니다!";
+    gameOver = true;
     }
 
-    if (chances < 1){
+history.push(userValue);
+console.log(history);
+// 앞에서 유효성 검사를 하고 (return; // 함수 실행을 종료) history.push(userValue); 를 넣어야 한다. 그래야 1~100 사이의 값만 history 배열에 들어간다.
+
+    if (chances < 1 && gameOver === false) {
         gameOver = true;
+    resultArea.textContent = `정답은 ${computerNum}입니다!`;
     }
     // 긁적긁적 빛나 강사님도 실수한 부분! 왜 실수 했을까? 
     // let 변수를 선언하고 chances 라는 고유 ID 값에 = 3 3번 기회로 설정하였고,
