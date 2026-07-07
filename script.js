@@ -67,7 +67,7 @@ history.push(userValue);
 console.log(history);
 // 앞에서 유효성 검사를 하고 (return; // 함수 실행을 종료) history.push(userValue); 를 넣어야 한다. 그래야 1~100 사이의 값만 history 배열에 들어간다.
 
-    if (chances < 1 && gameOver === false) {
+    if (chances < 1){
         gameOver = true;
     resultArea.textContent = `정답은 ${computerNum}입니다!`;
     }
